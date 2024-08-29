@@ -1,31 +1,21 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+  const {data: session, status} = useSession()
   const router = useRouter()
-  const handleSubmit = async () => {
-    try {
-        const response = await fetch("/api/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-        });
-        const data = await response.json();
-        if (data.success) {
-            router.push('/dashboard')
-        } else {
-            console.log('Login failed');
-        }
-    } catch (error) {
-        console.log('Catch error:', error);
+  useEffect(() => {
+    console.log(status)
+    if (status === 'authenticated') {
+      router.push('/dashboard')
+    } else {
+      // signIn()
+      router.push('/dashboard')
     }
-};
+  }, [status])
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
@@ -36,7 +26,7 @@ const LoginForm = () => {
           width={150}
           height={150}
           className="mb-8"></img>
-        <div className="w-full max-w-xs p-8 rounded-lg">
+        {/* <div className="w-full max-w-xs p-8 rounded-lg">
 
           <div className="mb-6">
             <label htmlFor="email" className="block mb-2 text-sm font-medium">
@@ -67,10 +57,16 @@ const LoginForm = () => {
           <button
             type="submit"
             onClick={handleSubmit}
-            className="w-full text-black bg-white hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-            Submit
+            className="w-full mb-2 text-black bg-white hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+            Login
           </button>
-        </div>
+          <button
+            type="submit"
+            onClick={() => signIn()}
+            className="w-full text-black bg-white hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+            Go to Login
+          </button>
+        </div> */}
       </div>
     </div>
   );
