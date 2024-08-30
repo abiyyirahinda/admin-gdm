@@ -13,6 +13,15 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      keyframes: {
+        breathing: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1)', opacity: '0.5' },
+        }
+      },
+      animation: {
+        breathing: 'breathing 3s ease-in-out infinite'
+      }
     },
   },
   plugins: [],

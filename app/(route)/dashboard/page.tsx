@@ -16,7 +16,11 @@ const DashboardPage = () => {
   }, [status])
   
   if (status === 'loading' || status === 'unauthenticated') {
-    return <div>Loading...</div>
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <img src="https://garam2musim.com/wp-content/uploads/2022/06/Picture1.png" alt="loading" className='animate-breathing' />
+      </div>
+    )
   }
 
   return (
