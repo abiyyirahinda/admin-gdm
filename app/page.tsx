@@ -1,12 +1,11 @@
-import LoginForm from '@/components/login'
-import React from 'react'
+// 
+"use client"
 
-const Home = () => {
-  return (
-    <>
-    <LoginForm />
-    </>
-  )
+import { redirect } from 'next/navigation'
+
+
+function Home() {
+  redirect('/dashboard')
 }
 
 export default Home
