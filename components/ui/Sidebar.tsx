@@ -1,7 +1,7 @@
 "use client"
 
 import Image from 'next/image'
-import { ArrowRight2, Calendar, Document, Element3, Folder2, Headphone, Profile2User, Setting2, Setting4, Star, Timer1, Triangle } from 'iconsax-react'
+import { ArrowRight2, Book, Box, Calendar, Document, Element3, Folder2, Headphone, Profile2User, Setting2, Setting4, Star, Timer1, Triangle } from 'iconsax-react'
 import ProfileImage from '@/components/assets/profile.png'
 import Link, { LinkProps } from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -23,12 +23,14 @@ function Sidebar() {
             <div className='w-full h-full bg-white border-r'>
                 {/* logo */}
                 <div className='p-4 md:p-6 flex cursor-pointer group items-center gap-2'>
-                    <div className='h-10 outline outline-violet-300 w-10 flex items-center bg-gradient-to-br justify-center rounded-full from-violet-500 to-violet-400 text-white'>
-                        <Triangle size={24} className='relative group-hover:scale-75 duration-200' />
+                    <div className='h-10 outline  w-10 flex items-center  justify-center rounded-full from-violet-500 to-violet-400 text-white'>
+                        {/* <Triangle size={24} className='relative group-hover:scale-75 duration-200' /> */}
+                        <img src='https://garam2musim.com/wp-content/uploads/2022/06/Picture1.png' alt="User" width={40} height={40} className="rounded-full" />
+                        
                     </div>
                     <div>
-                        <h1 className='text-sm font-bold text-gray-800'>Githr</h1>
-                        <p className='text-xs text-gray-500 font-medium'>HR Management</p>
+                        <h1 className='text-sm font-bold text-gray-800'>Garam Dua Musim</h1>
+                        <p className='text-xs text-gray-500 font-medium'>Store Management</p>
                     </div>
                 </div>
 
@@ -44,17 +46,17 @@ function Sidebar() {
                             Dashboard
                         </Link>
 
-                        <Link href={'/app/teams'} className={`flex ${pathname === '/app/teams' ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
-                            <Profile2User size={16} />
-                            Teams
+                        <Link href={'/products'} className={`flex ${pathname === '/products' || pathname === '/products/create-product' ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
+                            <Box size={16} />
+                            Products
                         </Link>
 
-                        <Link href={'/app/integrations'} className={`flex ${pathname === '/app/integrations' ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
-                            <Setting4 size={16} />
-                            Integrations
+                        <Link href={'/order'} className={`flex ${pathname === '/order' ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
+                            <Book size={16} />
+                            Order
                         </Link>
 
-                        <button disabled className={`flex ${pathname === '/app/calendar' ? 'text-primary' : ''} hover:px-8 disabled:opacity-60 duration-200 px-6 py-2 items-center gap-2`}>
+                        {/* <button disabled className={`flex ${pathname === '/app/calendar' ? 'text-primary' : ''} hover:px-8 disabled:opacity-60 duration-200 px-6 py-2 items-center gap-2`}>
                             <Calendar size={16} />
                             Calendar
                         </button>
@@ -77,7 +79,7 @@ function Sidebar() {
                         <button disabled className={`flex ${pathname === '/app/documents' ? 'text-primary' : ''} hover:px-8 disabled:opacity-60 duration-200 px-6 py-2 items-center gap-2`}>
                             <Document size={16} />
                             Documents
-                        </button>
+                        </button> */}
                     </div>
 
                     <div>
