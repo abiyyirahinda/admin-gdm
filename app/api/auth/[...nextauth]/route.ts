@@ -5,8 +5,10 @@ import CredentialsProvider from "next-auth/providers/credentials";
 const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
+    // max age is 1 hour
+    maxAge: 60 * 60, // 1 hour
   },
-  secret: "secret",
+  secret: process.env.AUTH_SECRET,
   providers: [
     CredentialsProvider({
       type: "credentials",
