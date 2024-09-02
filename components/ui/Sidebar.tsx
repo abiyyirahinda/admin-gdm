@@ -1,12 +1,13 @@
 "use client"
 
 import Image from 'next/image'
-import { ArrowRight2, Book, Box, Calendar, Document, Element3, Folder2, Headphone, Profile2User, Setting2, Setting4, Star, Timer1, Triangle } from 'iconsax-react'
+import { ArrowRight2, Book, Box, Calendar, Document, Element3, Folder2, Headphone, Logout, Profile2User, Setting2, Setting4, Star, Timer1, Triangle } from 'iconsax-react'
 import ProfileImage from '@/components/assets/profile.png'
 import Link, { LinkProps } from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCentralStore } from '@/Store'
 import React, { useEffect } from 'react'
+import { signOut } from 'next-auth/react'
 
 
 function Sidebar() {
@@ -89,9 +90,9 @@ function Sidebar() {
                                 Settings
                             </button>
 
-                            <button className={`flex ${pathname === '/app/support' ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
-                                <Headphone size={16} />
-                                Support
+                            <button onClick={() => signOut()} className='flex hover:px-8 duration-200 px-6 py-2 items-center gap-2'>
+                                <Logout size={16} />
+                                Sign Out
                             </button>
                         </div>
 
