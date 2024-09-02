@@ -1,7 +1,7 @@
 "use client"
 
 import Image from 'next/image'
-import { ArrowRight2, Book, Box, Calendar, Document, Element3, Folder2, Headphone, Logout, Profile2User, Setting2, Setting4, Star, Timer1, Triangle } from 'iconsax-react'
+import { AddCircle, ArrowRight2, Book, Box, Calendar, Document, Element3, Folder2, Headphone, Logout, Profile2User, Setting2, Setting4, Star, Timer1, Triangle } from 'iconsax-react'
 import ProfileImage from '@/components/assets/profile.png'
 import Link, { LinkProps } from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -47,11 +47,15 @@ function Sidebar() {
                             Dashboard
                         </Link>
 
-                        <Link href={'/products'} className={`flex ${pathname === '/products' || pathname === '/products/create-product' ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
+                        <Link href={'/products'} className={`flex ${pathname === '/products' || (pathname.startsWith('/products/') && pathname !== '/products/create-product') ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
                             <Box size={16} />
                             Products
                         </Link>
 
+                        <Link href={'/products/create-product'} className={`flex ${pathname === '/products/create-product' ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
+                            <AddCircle size={16} />
+                            Create new product
+                        </Link>
                         <Link href={'/order'} className={`flex ${pathname === '/order' ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
                             <Book size={16} />
                             Order
@@ -140,16 +144,23 @@ const NavbarLink = ({ href, active }: { href: string, active: boolean }) => {
 }
 
 const NavLink = React.forwardRef<
-    LinkProps,
-    React.ComponentPropsWithoutRef<'a'>>
-    (({ className, href, ...props }) =>
-        <Link
-            href={href!}
-            className={`flex ${window.location.pathname === href! ? 'text-primary' : ''} hover:px-8 duration-200 rounded-md w-full py-2 px-6 items-center gap-2`}
-            {...props}
-        />
-    )
-NavLink.displayName = 'NavLink'
+  HTMLAnchorElement,
+  LinkProps & React.ComponentPropsWithoutRef<'a'>
+>((props, ref) => {
+  const { className, href, ...rest } = props;
+
+  return (
+    <Link
+      href={href!}
+      ref={ref}
+      className={`flex ${window.location.pathname === href ? 'text-primary' : ''} hover:px-8 duration-200 rounded-md w-full py-2 px-6 items-center gap-2 ${className}`}
+      {...rest}
+    />
+  );
+});
+
+NavLink.displayName = 'NavLink';
+
 
 
 export default Sidebar

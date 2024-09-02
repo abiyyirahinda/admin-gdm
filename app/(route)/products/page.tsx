@@ -1,23 +1,10 @@
 "use client";
-import { OutlineButton } from "@/components/Button";
-import PageNavbar, {
-  PageNavbarIconButton,
-  PageNavbarLeftContent,
-  PageNavbarPrimaryButton,
-  PageNavbarRightContent,
-} from "@/components/ui/PageNavbar";
-import { Add, ArrowRight3, CalendarEdit, DirectNotification, SearchNormal1 } from "iconsax-react";
+import { PageNavbarPrimaryButton } from "@/components/ui/PageNavbar";
+import { Add } from "iconsax-react";
 import React, { useEffect, useState } from "react";
-import ProfileImage from "@/components/assets/profile.png";
-import Image from "next/image";
-import { useSession } from "next-auth/react";
 import TopNavbar from "@/components/TopNavbar";
-import AppLayout from "@/components/layout";
 import PageContent from "@/components/ui/PageContent";
 import { useRouter } from "next/navigation";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Pagination,
   PaginationContent,
