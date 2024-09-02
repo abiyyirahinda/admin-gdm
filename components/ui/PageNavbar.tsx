@@ -49,7 +49,7 @@ const PageNavbarPrimaryButton = React.forwardRef<
     (({ className, ...props }, ref) =>
         <button
             ref={ref}
-            className='h-8 gap-1 bg-primary hidden py-1 px-2 duration-200 text-white rounded-lg text-xs md:flex items-center justify-center'
+            className='h-8 gap-1 bg-primary py-1 px-2 duration-200 text-white rounded-lg text-xs md:flex items-center justify-center'
             {...props}
         />
     )
