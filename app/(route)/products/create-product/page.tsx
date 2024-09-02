@@ -34,8 +34,37 @@ const CreateProdctPage: React.FC = () => {
   const handleDelete = (index: number) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
+  const validateInputs = () => {
+    if (images.length === 0) {
+      toast.error("At least one product image is required.");
+      return false;
+    }
+    if (!productName.trim()) {
+      toast.error("Product name is required.");
+      return false;
+    }
+    if (productPrice <= 0) {
+      toast.error("Product price must be greater than zero.");
+      return false;
+    }
+    if (!productCategory.trim()) {
+      toast.error("Product category is required.");
+      return false;
+    }
+    if (!productSize.trim()) {
+      toast.error("Product size is required.");
+      return false;
+    }
+    if (!productDescription.trim()) {
+      toast.error("Product description is required.");
+      return false;
+    }
+    
+    return true;
+  };
 
   const createProduct = async () => {
+    if (!validateInputs()) return;
     try {
       const response = await fetch("/api/create-product", {
         method: "POST",

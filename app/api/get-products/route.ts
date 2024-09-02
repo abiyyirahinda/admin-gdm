@@ -11,7 +11,7 @@ export async function GET(request: Request) {
         const limit = parseInt(searchParams.get("limit") || "10");
         const skip = (page - 1) * limit;
 
-        const products = await Product.find({}).skip(skip).limit(limit);
+        const products = await Product.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
         const total = await Product.countDocuments({});
 
         return new Response(JSON.stringify({ products, total }), { status: 200 });

@@ -62,6 +62,10 @@ const DetailProduct = () => {
   }, [productId]);
 
   const handleUpdateProduct = async () => {
+    if (!productName || !productPrice || !productCategory || !productSize || !productDescription || images.length === 0) {
+      toast.error("Please fill in all fields and upload at least one image.");
+      return;
+    }
     try {
       const body = {
         productName,
@@ -144,11 +148,18 @@ const DetailProduct = () => {
             <label className="block mb-2 text-sm font-medium text-gray-600">
               Product Image
             </label>
-            <CldUploadWidget onSuccess={handleSuccess}  uploadPreset="no6acgbu">
+            <CldUploadWidget onSuccess={handleSuccess} uploadPreset="no6acgbu">
               {({ open }) => {
+                const handleOpen = () => {
+                  try {
+                    open();
+                  } catch (error) {
+                    toast.error("Failed to upload image.");
+                  }
+                }
                 return (
                   <PageNavbarPrimaryButton
-                    onClick={() => open()}
+                    onClick={handleOpen}
                     className="h-8 gap-1 bg-primary hidden py-1 px-2 duration-200 text-white rounded-lg text-xs md:flex items-center justify-center"
                   >
                     <Image size={16} />
