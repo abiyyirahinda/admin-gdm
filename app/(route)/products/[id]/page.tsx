@@ -15,6 +15,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Image {
   url: string;
@@ -27,12 +28,14 @@ const DetailProduct = () => {
   const [productCategory, setProductCategory] = useState<string>("");
   const [productSize, setProductSize] = useState<string>("");
   const [productDescription, setProductDescription] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const params = useParams();
   const productId = params.id;
 
   useEffect(() => {
+    setLoading(true);
     const fetchProduct = async () => {
       try {
         const response = await fetch(`/api/edit-product/${productId}`);
@@ -48,6 +51,8 @@ const DetailProduct = () => {
       } catch (error) {
         console.error("Failed to fetch product:", error);
         toast.error("Failed to load product details.");
+      } finally{
+        setLoading(false);
       }
     };
 
@@ -102,9 +107,39 @@ const DetailProduct = () => {
       <PageContent>
         <h4 className="font-bold text-gray-700">Detail Product</h4>
         <div className="border p-4 md:p-6 rounded-2xl">
-          <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
-            {/* Input fields as you have them */}
-          </div>
+          {loading ? (
+            <>
+            <div className="mb-4">
+                <Skeleton className="h-8 w-48 rounded-lg" />
+              </div>
+
+              {/* Skeleton for Product Name and Price Input Fields */}
+              <div className="flex flex-col  justify-between gap-4 mb-4">
+                <Skeleton className="w-full h-60 rounded-lg" />
+              </div>
+
+              {/* Skeleton for Category and Size Input Fields */}
+              <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
+                <Skeleton className="flex-1 h-10 rounded-lg" />
+                <Skeleton className="flex-1 h-10 rounded-lg" />
+              </div>
+              <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
+                <Skeleton className="flex-1 h-10 rounded-lg" />
+                <Skeleton className="flex-1 h-10 rounded-lg" />
+              </div>
+
+              {/* Skeleton for Description Textarea */}
+              <div className="flex flex-col md:flex-row mb-4">
+                <Skeleton className="flex-1 h-24 rounded-lg" />
+              </div>
+
+              {/* Skeleton for Update Button */}
+              <div className="flex items-end justify-end">
+                <Skeleton className="h-10 w-32 rounded-lg" />
+              </div>
+            </>
+          ) : (
+            <>
           <div className="mb-4">
             <label className="block mb-2 text-sm font-medium text-gray-600">
               Product Image
@@ -239,6 +274,8 @@ const DetailProduct = () => {
               <span className="hidden md:inline">Update Product</span>
             </PageNavbarPrimaryButton>
           </div>
+            </>
+          )}
         </div>
       </PageContent>
     </div>
