@@ -102,7 +102,7 @@ const DetailBillboard = () => {
               <div className="w-full mt-2">
                 <div className="p-1 group relative max-w-xs">
                   <Card className="">
-                    <CardContent className="flex aspect-square items-center justify-center p-0">
+                    <CardContent className="flex  items-center justify-center p-0">
                       <img
                         src={image} // Hanya menampilkan gambar pertama (karena hanya boleh 1 gambar)
                         alt="Uploaded Image"
