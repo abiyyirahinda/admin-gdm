@@ -59,10 +59,10 @@ const ProductsPage = () => {
       <TopNavbar />
       <PageContent>
         <h4 className="font-bold text-gray-700 mb-4">Products Management</h4>
-        <PageNavbarPrimaryButton onClick={createProduct}>
+        {/* <PageNavbarPrimaryButton onClick={createProduct}>
           <Add size={20} />
           <span className="hidden md:inline">Create Product</span>
-        </PageNavbarPrimaryButton>
+        </PageNavbarPrimaryButton> */}
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {loading
             ? // Menampilkan skeleton loader ketika data masih loading
