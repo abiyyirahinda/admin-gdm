@@ -62,7 +62,7 @@ const BillboardPage = () => {
                   <div className="mt-4 flex flex-col justify-between">
                     <h1 className="font-semibold line-clamp-1">{billboard.billboardLabel}</h1>
 
-                    <PageNavbarPrimaryButton onClick={() => {}} className="w-full">
+                    <PageNavbarPrimaryButton onClick={() => router.push(`/billboard/${billboard._id}`)} className="w-full">
                       View Details
                     </PageNavbarPrimaryButton>
                   </div>

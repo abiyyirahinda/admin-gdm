@@ -28,7 +28,9 @@ const ProductsPage = () => {
     const getProducts = async (page: number) => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/get-products?page=${page}&limit=${ITEMS_PER_PAGE}`);
+        const response = await fetch(
+          `/api/get-products?page=${page}&limit=${ITEMS_PER_PAGE}`
+        );
         const data = await response.json();
         setProducts(data.products);
         setCountSkeleton(data.products.length);
@@ -64,7 +66,7 @@ const ProductsPage = () => {
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {loading
             ? // Menampilkan skeleton loader ketika data masih loading
-              [...Array(countSkeleton)].map((_, index) => (
+              [...Array(10)].map((_, index) => (
                 <div key={index} className="rounded-lg border overflow-hidden">
                   <div className="aspect-w-1 aspect-h-1 w-full bg-gray-200 animate-pulse min-h-[200px]"></div>
                   <div className="p-4 flex flex-col gap-2">
@@ -76,12 +78,18 @@ const ProductsPage = () => {
                 </div>
               ))
             : products.map((product: any) => (
-                <div key={product._id} className="group relative">
+                <div key={product._id} className="group relative ">
                   <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md">
-                    <img src={product.images[0].url} alt="image" className="w-full h-full object-cover object-center" />
+                    <img
+                      src={product.images[0].url}
+                      alt="image"
+                      className="w-full h-full object-cover object-center"
+                    />
                   </div>
                   <div className="mt-4 flex flex-col justify-between">
-                    <h1 className="font-semibold line-clamp-1">{product.productName}</h1>
+                    <h1 className="font-semibold line-clamp-1">
+                      {product.productName}
+                    </h1>
                     <p className="text-sm text-gray-500 line-clamp-1 mb-4">
                       {product.productCategory} - {product.productSize}
                     </p>
@@ -90,7 +98,10 @@ const ProductsPage = () => {
                         {formatToIDR(product.productPrice)}
                       </h3>
                     </div>
-                    <PageNavbarPrimaryButton onClick={() => router.push(`/products/${product._id}`)} className="w-full">
+                    <PageNavbarPrimaryButton
+                      onClick={() => router.push(`/products/${product._id}`)}
+                      className="w-full"
+                    >
                       View Details
                     </PageNavbarPrimaryButton>
                   </div>
@@ -100,18 +111,34 @@ const ProductsPage = () => {
         <Pagination className="mt-8">
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious href="#" onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} />
+              <PaginationPrevious
+                href="#"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              />
             </PaginationItem>
             {Array.from({ length: totalPages }, (_, i) => (
               <PaginationItem key={i}>
-                <PaginationLink href="#" onClick={() => setCurrentPage(i + 1)} className={currentPage === i + 1 ? "text-primary" : ""}>
+                <PaginationLink
+                  href="#"
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`transition-colors duration-200 ${
+                    currentPage === i + 1
+                      ? "text-primary border-b-2 border-primary"
+                      : "hover:text-primary"
+                  }`}
+                >
                   {i + 1}
                 </PaginationLink>
               </PaginationItem>
             ))}
             {totalPages > 5 && <PaginationEllipsis />}
             <PaginationItem>
-              <PaginationNext href="#" onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} />
+              <PaginationNext
+                href="#"
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+              />
             </PaginationItem>
           </PaginationContent>
         </Pagination>
