@@ -1,7 +1,7 @@
 "use client"
 
 import Image from 'next/image'
-import { AddCircle, ArrowRight2, Book, Box, Calendar, Document, Element3, Folder2, Headphone, Logout, Profile2User, Setting2, Setting4, Star, Timer1, Triangle } from 'iconsax-react'
+import { AddCircle, ArrowRight2, Book, Box, Calendar, Document, Element3, Folder2, Headphone, Logout, MouseSquare, Profile2User, Setting2, Setting4, Star, Timer1, Triangle } from 'iconsax-react'
 import ProfileImage from '@/components/assets/profile.png'
 import Link, { LinkProps } from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -47,6 +47,10 @@ function Sidebar() {
                             Dashboard
                         </Link>
 
+                        <Link href={'/billboard'} className={`flex ${pathname === '/billboard' || (pathname.startsWith('/billboard/')) ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
+                            <MouseSquare size={16} />
+                            Billboard
+                        </Link>
                         <Link href={'/products'} className={`flex ${pathname === '/products' || (pathname.startsWith('/products/') && pathname !== '/products/create-product') ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
                             <Box size={16} />
                             Products
