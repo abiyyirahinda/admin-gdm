@@ -53,7 +53,18 @@ const PageNavbarPrimaryButton = React.forwardRef<
             {...props}
         />
     )
-PageNavbarPrimaryButton.displayName = 'PageNavbarPrimaryButton'
+    PageNavbarPrimaryButton.displayName = 'PageNavbarPrimaryButton'
+const PageNavbarDeleteButton = React.forwardRef<
+    HTMLButtonElement,
+    React.ComponentPropsWithoutRef<'button'>>
+    (({ className, ...props }, ref) =>
+        <button
+            ref={ref}
+            className='h-8 gap-1 bg-red-500 py-1 px-2 duration-200 text-white rounded-lg text-xs md:flex items-center justify-center'
+            {...props}
+        />
+    )
+PageNavbarDeleteButton.displayName = 'PageNavbarDeleteButton'
 
 
 function PageNavbar({ children }: { children: React.ReactNode }) {
@@ -81,4 +92,4 @@ function PageNavbar({ children }: { children: React.ReactNode }) {
 
 export default PageNavbar
 
-export { PageNavbarLeftContent, PageNavbarRightContent, PageNavbarIconButton, PageNavbarPrimaryButton }
+export { PageNavbarLeftContent, PageNavbarRightContent, PageNavbarIconButton, PageNavbarPrimaryButton, PageNavbarDeleteButton }

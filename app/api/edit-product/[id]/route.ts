@@ -35,3 +35,17 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ message: "Failed to update product" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(params.id);
+    if (!deletedProduct) {
+      return NextResponse.json({ message: "Product not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Product deleted successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("Error in DELETE request:", error);
+    return NextResponse.json({ message: "Failed to delete product" }, { status: 500 });
+  }
+}

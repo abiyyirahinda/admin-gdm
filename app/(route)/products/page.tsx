@@ -112,14 +112,13 @@ const ProductsPage = () => {
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
-                href="#"
+
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               />
             </PaginationItem>
             {Array.from({ length: totalPages }, (_, i) => (
               <PaginationItem key={i}>
                 <PaginationLink
-                  href="#"
                   onClick={() => setCurrentPage(i + 1)}
                   className={`transition-colors duration-200 ${
                     currentPage === i + 1
@@ -134,7 +133,6 @@ const ProductsPage = () => {
             {totalPages > 5 && <PaginationEllipsis />}
             <PaginationItem>
               <PaginationNext
-                href="#"
                 onClick={() =>
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }

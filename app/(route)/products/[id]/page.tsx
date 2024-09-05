@@ -3,7 +3,7 @@ import TopNavbar from "@/components/TopNavbar";
 import PageContent from "@/components/ui/PageContent";
 import React, { useEffect, useState } from "react";
 import { CldUploadWidget } from "next-cloudinary";
-import { PageNavbarPrimaryButton } from "@/components/ui/PageNavbar";
+import { PageNavbarDeleteButton, PageNavbarPrimaryButton } from "@/components/ui/PageNavbar";
 import { Add, DirectSend, Image, Trash } from "iconsax-react";
 import {
   Carousel,
@@ -95,6 +95,24 @@ const DetailProduct = () => {
       toast.error("Failed to update product.");
     }
   };
+
+  const handleDeleteProduct = async () => {
+    try {
+      const response = await fetch(`/api/edit-product/${productId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        toast.success("Product deleted successfully.");
+        router.push("/products");
+      } else {
+        toast.error("Failed to delete product.");
+      }
+    } catch (error) {
+      console.error("Failed to delete product:", error);
+      toast.error("Failed to delete product.");
+    }
+  }
 
   const handleDelete = (index: number) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
@@ -279,7 +297,11 @@ const DetailProduct = () => {
               ></textarea>
             </div>
           </div>
-          <div className="flex items-end justify-end">
+          <div className="flex items-end justify-end gap-2">
+            <PageNavbarDeleteButton onClick={handleDeleteProduct}>
+              <Trash size={24} />
+              <span className="hidden md:inline">Delete Product</span>
+            </PageNavbarDeleteButton>
             <PageNavbarPrimaryButton onClick={handleUpdateProduct}>
               <DirectSend size={24} />
               <span className="hidden md:inline">Update Product</span>
