@@ -15,3 +15,5 @@ export async function GET(request: Request) {
     return new Response(JSON.stringify({ message: "Failed to fetch billboards" }), { status: 500 });
   }
 }
+
+// ge

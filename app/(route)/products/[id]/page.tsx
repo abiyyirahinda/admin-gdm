@@ -16,6 +16,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SelectValue, SelectTrigger, SelectContent, SelectGroup, Select, SelectItem } from "@/components/ui/select";
 
 interface Image {
   url: string;
@@ -29,6 +30,8 @@ const DetailProduct = () => {
   const [productSize, setProductSize] = useState<string>("");
   const [productDescription, setProductDescription] = useState<string>("");
   const [loading, setLoading] = useState(false);
+
+  const [getCategory, setGetCategory] = useState([])
 
   const router = useRouter();
   const params = useParams();
@@ -56,10 +59,27 @@ const DetailProduct = () => {
       }
     };
 
+    const getCategories = async () => {
+      try {
+        const response = await fetch("/api/get-category");
+        const data = await response.json();
+        setGetCategory(data.categories);
+        console.log(data.categories)
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
     if (productId) {
       fetchProduct();
+      getCategories();
     }
+
   }, [productId]);
+
+  const handleCategoryChange = (value: string) => {
+    setProductCategory(value);
+  }
 
   const handleUpdateProduct = async () => {
     if (!productName || !productPrice || !productCategory || !productSize || !productDescription || images.length === 0) {
@@ -121,7 +141,8 @@ const DetailProduct = () => {
   const handleSuccess = (res: any) => {
     setImages((prevImages) => [...prevImages, { url: res.info.secure_url }]);
   };
-  
+
+
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -257,14 +278,23 @@ const DetailProduct = () => {
               <label className="block mb-2 text-sm font-medium text-gray-600 ">
                 Category
               </label>
-              <input
-              value={productCategory}
-                onChange={(e) => setProductCategory(e.target.value)}
-                type="text"
-                className=" border text-gray-900 text-sm rounded-lg  block w-full p-2.5 outline-none focus:border-violet-500"
-                placeholder="Enter product category"
-                required
-              />
+              <Select value={productCategory} onValueChange={handleCategoryChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category"/>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                  {getCategory.map((category: any) => (
+                    <SelectItem
+                      key={category._id}
+                      value={category._id}
+                    >
+                      {category.categoryName}
+                    </SelectItem>
+                  ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="flex-1">

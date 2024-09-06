@@ -15,12 +15,17 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+interface Category {
+  _id: string;
+  categoryName: string;
+}
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [countSkeleton, setCountSkeleton] = useState<number>(10);
+  const [categories, setCategories] = useState<Category[]>([]);
+
 
   const router = useRouter();
   const ITEMS_PER_PAGE = 10;
@@ -33,16 +38,27 @@ const ProductsPage = () => {
         );
         const data = await response.json();
         setProducts(data.products);
-        setCountSkeleton(data.products.length);
         setTotalPages(Math.ceil(data.total / ITEMS_PER_PAGE));
+        
       } catch (error) {
       } finally {
-        // setLoading(true); // Set loading ke false setelah fetch selesai
         setLoading(false);
       }
     };
 
+    const getCategories = async () => {
+      try {
+        const response = await fetch("/api/get-category");
+        const data = await response.json();
+        setCategories(data.categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    }
+
+    getCategories();
     getProducts(currentPage);
+    
   }, [currentPage]);
   const formatToIDR = (amount: number): string => {
     return new Intl.NumberFormat("id-ID", {
@@ -50,10 +66,12 @@ const ProductsPage = () => {
       currency: "IDR",
     }).format(amount);
   };
-
-  const createProduct = () => {
-    router.push("/products/create-product");
-  };
+  const findCategoryName = (id: string) => {
+    const category = categories.find((category) => category._id === id);
+    if (category) {
+      return category?.categoryName;
+    }
+  }
   return (
     <div className="min-h-screen bg-white text-black">
       <TopNavbar />
@@ -91,7 +109,7 @@ const ProductsPage = () => {
                       {product.productName}
                     </h1>
                     <p className="text-sm text-gray-500 line-clamp-1 mb-4">
-                      {product.productCategory} - {product.productSize}
+                      {findCategoryName(product.productCategory)} - {product.productSize}
                     </p>
                     <div className="inline-flex mb-4">
                       <h3 className="bg-primary/10 rounded-md px-2 py-1 text-sm font-semibold text-primary">
