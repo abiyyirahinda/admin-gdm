@@ -1,7 +1,7 @@
 "use client"
 
 import Image from 'next/image'
-import { AddCircle, ArrowRight2, Book, Box, Calendar, Category, Document, Element3, Folder2, Headphone, Logout, MouseSquare, Profile2User, Setting2, Setting4, Star, Timer1, Triangle } from 'iconsax-react'
+import { AddCircle, AlignBottom, ArrowRight2, Book, Box, Calendar, Category, Chart, Document, Element3, Folder2, Headphone, Logout, MouseSquare, Profile2User, Setting2, Setting4, Size, Star, Timer1, Triangle } from 'iconsax-react'
 import ProfileImage from '@/components/assets/profile.png'
 import Link, { LinkProps } from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -43,7 +43,7 @@ function Sidebar() {
                     {/* top */}
                     <div className='pt-6 text-gray-500 font-medium space-y-2 md:px-2 text-xs'>
                         <Link href={'/dashboard'} className={`flex ${pathname === '/dashboard' ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
-                            <Element3 variant='Outline' size={16} />
+                            <Chart variant='Outline' size={16} />
                             Dashboard
                         </Link>
 
@@ -54,6 +54,10 @@ function Sidebar() {
                         <Link href={'/category'} className={`flex ${pathname === '/category' ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
                             <Category size={16} />
                             Category
+                        </Link>
+                        <Link href={'/size'} className={`flex ${pathname === '/size' ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
+                            <Size size={16} />
+                            Size
                         </Link>
                         <Link href={'/products'} className={`flex ${pathname === '/products' || (pathname.startsWith('/products/') && pathname !== '/products/create-product') ? 'text-primary' : ''} hover:px-8 duration-200 px-6 py-2 items-center gap-2`}>
                             <Box size={16} />

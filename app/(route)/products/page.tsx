@@ -19,12 +19,19 @@ interface Category {
   _id: string;
   categoryName: string;
 }
+interface Size {
+  _id: string
+  sizeUnit: string
+  sizeValue: string
+}
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  
   const [categories, setCategories] = useState<Category[]>([]);
+  const [sizes, setSizes] = useState<Size[]>([]);
 
 
   const router = useRouter();
@@ -55,8 +62,18 @@ const ProductsPage = () => {
         console.error("Error fetching categories:", error);
       }
     }
+    const getSizes = async () => {
+      try {
+        const response = await fetch("/api/get-size");
+        const data = await response.json();
+        setSizes(data);
+      } catch (error) {
+        console.error("Error fetching sizes:", error);
+      }
+    }
 
     getCategories();
+    getSizes()
     getProducts(currentPage);
     
   }, [currentPage]);
@@ -71,6 +88,13 @@ const ProductsPage = () => {
     if (category) {
       return category?.categoryName;
     }
+  }
+  const findSizeName = (id: string) => {
+    const size = sizes.find((size) => size._id === id);
+    if (size) {
+      return size
+    }
+    
   }
   return (
     <div className="min-h-screen bg-white text-black">
@@ -109,7 +133,7 @@ const ProductsPage = () => {
                       {product.productName}
                     </h1>
                     <p className="text-sm text-gray-500 line-clamp-1 mb-4">
-                      {findCategoryName(product.productCategory)} - {product.productSize}
+                      {findCategoryName(product.productCategory)} - {findSizeName(product.productSize)?.sizeValue} {findSizeName(product.productSize)?.sizeUnit}
                     </p>
                     <div className="inline-flex mb-4">
                       <h3 className="bg-primary/10 rounded-md px-2 py-1 text-sm font-semibold text-primary">

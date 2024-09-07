@@ -17,11 +17,12 @@ const CreateProdctPage: React.FC = () => {
   const [images, setImages] = React.useState<Image[]>([]);
   const [productName, setProductName] = useState<string>("");
   const [productPrice, setProductPrice] = useState(0);
-  const [getCategory, setGetCategory] = useState([])
   const [productCategory, setProductCategory] = useState<string>("")
   const [productSize, setProductSize] = useState<string>("");
   const [productDescription, setProductDescription] = useState<string>("");
-
+  
+  const [getCategory, setGetCategory] = useState([])
+  const [getSizes, setGetSizes] = useState([])
   const router = useRouter();
   useEffect(() => {
     const getCategories = async () => {
@@ -33,7 +34,17 @@ const CreateProdctPage: React.FC = () => {
         console.error("Error fetching categories:", error);
       }
     };
+    const getSizes = async () => {
+      try {
+        const response = await fetch("/api/get-size");
+        const data = await response.json();
+        setGetSizes(data);
+      } catch (error) {
+        console.error("Error fetching sizes:", error);
+      }
+    }
     getCategories();
+    getSizes();
   }, []);
   const handleSuccess = (res: any) => {
     setImages((prevImages) => [...prevImages, { url: res.info.secure_url }]);
@@ -44,6 +55,9 @@ const CreateProdctPage: React.FC = () => {
   };
   const handleCategoryChange = (value: string) => {
     setProductCategory(value);
+  }
+  const handleSizeChange = (value: string) => {
+    setProductSize(value);
   }
   const validateInputs = () => {
     console.log(productCategory)
@@ -183,13 +197,6 @@ const CreateProdctPage: React.FC = () => {
           <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
             <div className="flex-1">
               <label className="block mb-2 text-sm font-medium text-gray-600 ">Category</label>
-              {/* <input
-                onChange={(e) => setProductCategory(e.target.value)}
-                type="text"
-                className=" border text-gray-900 text-sm rounded-lg  block w-full p-2.5 outline-none focus:border-violet-500"
-                placeholder="Enter product category"
-                required
-              /> */}
               <Select onValueChange={handleCategoryChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a category" />
@@ -208,15 +215,22 @@ const CreateProdctPage: React.FC = () => {
 
             <div className="flex-1">
               <label className="block mb-2 text-sm font-medium text-gray-600">Size</label>
-              <input
-                onChange={(e) => setProductSize(e.target.value)}
-                type="text"
-                id="product-name-2"
-                name="product-name-2"
-                className=" border text-gray-900 text-sm rounded-lg  block w-full p-2.5 outline-none focus:border-violet-500 "
-                placeholder="Enter product price"
-                required
-              />
+              <Select onValueChange={handleSizeChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a size" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectContent>
+                    <SelectGroup>
+                      {getSizes.map((size: any) => (
+                        <SelectItem key={size._id} value={size._id}>
+                          {size.sizeValue} {size.sizeUnit}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="flex flex-col md:flex-row mb-4">
