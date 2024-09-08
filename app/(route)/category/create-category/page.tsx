@@ -5,10 +5,12 @@ import PageContent from "@/components/ui/PageContent";
 import { PageNavbarPrimaryButton } from "@/components/ui/PageNavbar";
 import { Add } from "iconsax-react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 const CreateCategory = () => {
   const [categoryName, setCategoryName] = useState<string>("");
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
 
+  const router = useRouter()
   const createCategory = async () => {
     try {
         const response = await fetch("/api/create-category", {
@@ -23,6 +25,7 @@ const CreateCategory = () => {
         }
         const result = await response.json();
         toast.success("Category created successfully!");
+        router.push("/category");
         return result;
     } catch (error) {
         toast.error("Failed to create category");
@@ -57,7 +60,7 @@ const CreateCategory = () => {
               ) : (
                 <>
                   <Add size={24} />
-                  <span className="hidden md:inline">Create Category</span>
+                  <span className="hidden md:inline">Create</span>
                 </>
               )}
             </PageNavbarPrimaryButton>
