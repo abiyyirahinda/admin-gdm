@@ -40,6 +40,7 @@ const createBillboard = () => {
       const result = await response.json();
       setLoadingButton(false);
       toast.success("Billboard created successfully!");
+      router.push("/billboard");
       return result;
     } catch (error) {
       toast.error("Error creating billboard!");

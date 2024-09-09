@@ -2,7 +2,7 @@
 import TopNavbar from "@/components/TopNavbar";
 import { Card, CardContent } from "@/components/ui/card";
 import PageContent from "@/components/ui/PageContent";
-import { PageNavbarPrimaryButton } from "@/components/ui/PageNavbar";
+import { PageNavbarDeleteButton, PageNavbarPrimaryButton } from "@/components/ui/PageNavbar";
 import { Add, DirectSend, Image, Trash } from "iconsax-react";
 import { CldUploadWidget } from "next-cloudinary";
 import { useParams, useRouter } from "next/navigation";
@@ -14,7 +14,6 @@ const DetailBillboard = () => {
   const [billboardLabel, setBillboardLabel] = useState<string>("");
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
 
-  
   const router = useRouter();
   const params = useParams();
   const billboardId = params.id;
@@ -58,7 +57,7 @@ const DetailBillboard = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
-      })
+      });
 
       if (response.ok) {
         toast.success("Billboard updated successfully");
@@ -71,6 +70,24 @@ const DetailBillboard = () => {
       toast.error("Failed to update billboard");
     }
   };
+
+  const handleDeleteBillboard = async () => {
+    try {
+      const response = await fetch(`/api/edit-billboard/${billboardId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        toast.success("Billboard deleted successfully");
+        router.push("/billboard");
+      } else {
+        toast.error("Failed to delete billboard");
+      }
+    } catch (error) {
+      console.error("Error deleting billboard:", error);
+      toast.error("Failed to delete billboard");
+    }
+  };
   return (
     <div className="min-h-screen bg-white text-black">
       <TopNavbar />
@@ -78,20 +95,13 @@ const DetailBillboard = () => {
         <h4 className="font-bold text-gray-700">Detail Billboard</h4>
         <div className="border p-4 md:p-6 rounded-2xl">
           <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-gray-600">
-              Billboard Image
-            </label>
-            <CldUploadWidget
-              onSuccess={handleSuccess}
-              uploadPreset="no6acgbu"
-              options={{ maxFiles: 1 }}
-            >
+            <label className="block mb-2 text-sm font-medium text-gray-600">Billboard Image</label>
+            <CldUploadWidget onSuccess={handleSuccess} uploadPreset="no6acgbu" options={{ maxFiles: 1 }}>
               {({ open }) => {
                 return (
                   <PageNavbarPrimaryButton
                     onClick={() => open()}
-                    className="h-8 gap-1 bg-primary hidden py-1 px-2 duration-200 text-white rounded-lg text-xs md:flex items-center justify-center"
-                  >
+                    className="h-8 gap-1 bg-primary hidden py-1 px-2 duration-200 text-white rounded-lg text-xs md:flex items-center justify-center">
                     <Image size={16} />
                     <span className="hidden md:inline">Upload an Image</span>
                   </PageNavbarPrimaryButton>
@@ -110,8 +120,7 @@ const DetailBillboard = () => {
                       />
                       <button
                         onClick={() => handleDelete()} // Hapus gambar pertama (karena hanya 1 gambar)
-                        className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                      >
+                        className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <Trash size={22} />
                       </button>
                     </CardContent>
@@ -122,9 +131,7 @@ const DetailBillboard = () => {
           </div>
           <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
             <div className="flex-1">
-              <label className="block mb-2 text-sm font-medium text-gray-600 ">
-                Billboard Label
-              </label>
+              <label className="block mb-2 text-sm font-medium text-gray-600 ">Billboard Label</label>
               <input
                 onChange={(e) => setBillboardLabel(e.target.value)}
                 value={billboardLabel}
@@ -136,7 +143,11 @@ const DetailBillboard = () => {
             </div>
           </div>
 
-          <div className="flex items-end justify-end">
+          <div className="flex items-end justify-end gap-2">
+            <PageNavbarDeleteButton onClick={handleDeleteBillboard}>
+              <Trash size={24} />
+              <span className="hidden md:inline">Delete Billboard</span>
+            </PageNavbarDeleteButton>
             <PageNavbarPrimaryButton onClick={handleUpdateBillboard}>
               <DirectSend size={24} />
               <span className="hidden md:inline">Update Billboard</span>
