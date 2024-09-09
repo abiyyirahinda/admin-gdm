@@ -6,6 +6,7 @@ import PageContent from "@/components/ui/PageContent";
 import { PageNavbarPrimaryButton } from "@/components/ui/PageNavbar";
 import { Add, Image, Trash } from "iconsax-react";
 import { CldUploadWidget } from "next-cloudinary";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -13,6 +14,8 @@ const createBillboard = () => {
   const [image, setImages] = useState<string>("");
   const [billboardLabel, setBillboardLabel] = useState<string>("");
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
+
+  const router = useRouter();
   const handleSuccess = (res: any) => {
     setImages(res.info.secure_url);
   };
