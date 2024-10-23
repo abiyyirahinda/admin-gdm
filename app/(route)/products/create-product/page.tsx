@@ -10,20 +10,30 @@ import { Card, CardContent } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
 interface Image {
   url: string;
+}
+interface productVariant {
+  sizeId: string;
+  sizeName: string;
+  price: number;
 }
 const CreateProdctPage: React.FC = () => {
   const [images, setImages] = React.useState<Image[]>([]);
   const [productName, setProductName] = useState<string>("");
   const [productPrice, setProductPrice] = useState(0);
-  const [productCategory, setProductCategory] = useState<string>("")
+  const [productCategory, setProductCategory] = useState<string>("");
   const [productSize, setProductSize] = useState<string>("");
   const [productDescription, setProductDescription] = useState<string>("");
-  
-  const [getCategory, setGetCategory] = useState([])
-  const [getSizes, setGetSizes] = useState([])
+
+  const [productVariants, setProductVariants] = useState<productVariant[]>([]);
+  const [getCategory, setGetCategory] = useState([]);
+  const [getSizes, setGetSizes] = useState([]);
   const router = useRouter();
+  console.log(productVariants);
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -42,10 +52,30 @@ const CreateProdctPage: React.FC = () => {
       } catch (error) {
         console.error("Error fetching sizes:", error);
       }
-    }
+    };
     getCategories();
     getSizes();
   }, []);
+  const toggleSize = (size: any) => {
+    setProductVariants((prev) => {
+      const exists = prev.find((variant) => variant.sizeId === size._id);
+
+      // Menghapus jika sudah ada
+      if (exists) {
+        return prev.filter((variant) => variant.sizeId !== size._id);
+      }
+
+      // Menambahkan jika belum ada
+      return [
+        ...prev,
+        {
+          sizeId: size._id,
+          sizeName: `${size.sizeValue} ${size.sizeUnit}`,
+          price: 0,
+        },
+      ];
+    });
+  };
   const handleSuccess = (res: any) => {
     setImages((prevImages) => [...prevImages, { url: res.info.secure_url }]);
   };
@@ -55,12 +85,12 @@ const CreateProdctPage: React.FC = () => {
   };
   const handleCategoryChange = (value: string) => {
     setProductCategory(value);
-  }
+  };
   const handleSizeChange = (value: string) => {
     setProductSize(value);
-  }
+  };
   const validateInputs = () => {
-    console.log(productCategory)
+    console.log(productCategory);
     if (images.length === 0) {
       toast.error("At least one product image is required.");
       return false;
@@ -133,9 +163,7 @@ const CreateProdctPage: React.FC = () => {
             <CldUploadWidget onSuccess={handleSuccess} uploadPreset="no6acgbu">
               {({ open }) => {
                 return (
-                  <PageNavbarPrimaryButton
-                    onClick={() => open()}
-                    className="h-8 gap-1 bg-primary hidden py-1 px-2 duration-200 text-white rounded-lg text-xs md:flex items-center justify-center">
+                  <PageNavbarPrimaryButton onClick={() => open()} className="h-8 gap-1 bg-primary hidden py-1 px-2 duration-200 text-white rounded-lg text-xs md:flex items-center justify-center">
                     <Image size={16} />
                     <span className="hidden md:inline">Upload an Image</span>
                   </PageNavbarPrimaryButton>
@@ -153,7 +181,8 @@ const CreateProdctPage: React.FC = () => {
                             <img src={image.url} alt={`Uploaded ${index + 1}`} className="object-cover h-full w-full rounded-lg" />
                             <button
                               onClick={() => handleDelete(index)}
-                              className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                              className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                            >
                               <Trash size={22} />
                             </button>
                           </CardContent>
@@ -180,8 +209,24 @@ const CreateProdctPage: React.FC = () => {
                 required
               />
             </div>
-
             <div className="flex-1">
+              <label className="block mb-2 text-sm font-medium text-gray-600 ">Category</label>
+              <Select onValueChange={handleCategoryChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {getCategory.map((category: any) => (
+                      <SelectItem key={category._id} value={category._id}>
+                        {category.categoryName}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            {/* <div className="flex-1">
               <label className="block mb-2 text-sm font-medium text-gray-600">Product Price</label>
               <input
                 onChange={(e) => setProductPrice(parseInt(e.target.value))}
@@ -192,30 +237,27 @@ const CreateProdctPage: React.FC = () => {
                 placeholder="Enter product price"
                 required
               />
-            </div>
+            </div> */}
           </div>
           <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
             <div className="flex-1">
-              <label className="block mb-2 text-sm font-medium text-gray-600 ">Category</label>
-              <Select onValueChange={handleCategoryChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {getCategory.map((category: any) => (
-                      <SelectItem key={category._id}  value={category._id}>
-                        {category.categoryName}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex-1">
               <label className="block mb-2 text-sm font-medium text-gray-600">Size</label>
-              <Select onValueChange={handleSizeChange}>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <PageNavbarPrimaryButton>Select</PageNavbarPrimaryButton>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuLabel>Size</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {getSizes.map((size: any) => (
+                    <DropdownMenuCheckboxItem key={size._id} checked={productVariants.some((variant) => variant.sizeId === size._id)} onCheckedChange={() => toggleSize(size)}>
+                      {size.sizeValue} {size.sizeUnit}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              {/* <Select onValueChange={handleSizeChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a size" />
                 </SelectTrigger>
@@ -230,9 +272,27 @@ const CreateProdctPage: React.FC = () => {
                     </SelectGroup>
                   </SelectContent>
                 </SelectContent>
-              </Select>
+              </Select> */}
             </div>
           </div>
+          <div className="flex flex-col gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {productVariants.map((variant, index) => (
+                <div key={index} className="flex flex-col">
+                  <label className="block mb-2 text-sm font-medium text-gray-600">{variant?.sizeName}</label>
+                  <input
+                    type="number"
+                    // value={variant.price}
+                    // onChange={(e) => updatePrice(variant.sizeId, Number(e.target.value))}
+                    className="border text-gray-900 text-sm rounded-lg w-full p-2.5 outline-none focus:border-violet-500"
+                    placeholder="Enter price"
+                    required
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="flex flex-col md:flex-row mb-4">
             <div className="flex-1">
               <label className="block mb-2 text-sm font-medium text-gray-600 ">Description</label>
@@ -240,7 +300,8 @@ const CreateProdctPage: React.FC = () => {
                 onChange={(e) => setProductDescription(e.target.value)}
                 className="min-h-36 border text-gray-900 text-sm rounded-lg block w-full p-3 focus:border-violet-500 outline-none"
                 placeholder="Enter product description"
-                required></textarea>
+                required
+              ></textarea>
             </div>
           </div>
           <div className="flex items-end justify-end">

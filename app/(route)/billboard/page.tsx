@@ -56,7 +56,7 @@ const BillboardPage = () => {
               ))
             : billboards.map((billboard: any) => (
                 <div key={billboard._id} className="group relative">
-                  <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md">
+                  <div className="aspect-square w-full overflow-hidden rounded-md">
                     <img src={billboard.image} alt="image" className="w-full h-full object-cover object-center" />
                   </div>
                   <div className="mt-4 flex flex-col justify-between">
