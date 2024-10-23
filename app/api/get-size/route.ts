@@ -8,7 +8,8 @@ const loadDB = async () => {
 
 export async function GET(request: Request) {
   try {
-    const sizes = await Size.find({});
+    // sort by sizeValue
+    const sizes = await Size.find({}).sort({ sizeValue: 1 });
     return NextResponse.json(sizes, { status: 200 });
   } catch (error) {
     console.error("Error in GET request:", error);

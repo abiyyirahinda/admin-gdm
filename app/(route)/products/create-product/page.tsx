@@ -24,16 +24,13 @@ interface productVariant {
 const CreateProdctPage: React.FC = () => {
   const [images, setImages] = React.useState<Image[]>([]);
   const [productName, setProductName] = useState<string>("");
-  const [productPrice, setProductPrice] = useState(0);
   const [productCategory, setProductCategory] = useState<string>("");
-  const [productSize, setProductSize] = useState<string>("");
   const [productDescription, setProductDescription] = useState<string>("");
 
   const [productVariants, setProductVariants] = useState<productVariant[]>([]);
   const [getCategory, setGetCategory] = useState([]);
   const [getSizes, setGetSizes] = useState([]);
   const router = useRouter();
-  console.log(productVariants);
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -56,6 +53,18 @@ const CreateProdctPage: React.FC = () => {
     getCategories();
     getSizes();
   }, []);
+  const updatePrice = (sizeId: string, price: number) => {
+    // mengubah price berdasarkan size pada productVariants
+    setProductVariants((prev) => {
+      return prev.map((variant) => {
+        if (variant.sizeId === sizeId) {
+          return { ...variant, price };
+        }
+        return variant;
+      });
+    });
+
+  }
   const toggleSize = (size: any) => {
     setProductVariants((prev) => {
       const exists = prev.find((variant) => variant.sizeId === size._id);
@@ -86,9 +95,6 @@ const CreateProdctPage: React.FC = () => {
   const handleCategoryChange = (value: string) => {
     setProductCategory(value);
   };
-  const handleSizeChange = (value: string) => {
-    setProductSize(value);
-  };
   const validateInputs = () => {
     console.log(productCategory);
     if (images.length === 0) {
@@ -99,16 +105,12 @@ const CreateProdctPage: React.FC = () => {
       toast.error("Product name is required.");
       return false;
     }
-    if (productPrice <= 0) {
-      toast.error("Product price must be greater than zero.");
+    if (productVariants.length === 0) {
+      toast.error("Product size and price is required.");
       return false;
     }
     if (!productCategory) {
       toast.error("Product category is required.");
-      return false;
-    }
-    if (!productSize.trim()) {
-      toast.error("Product size is required.");
       return false;
     }
     if (!productDescription.trim()) {
@@ -129,9 +131,10 @@ const CreateProdctPage: React.FC = () => {
         },
         body: JSON.stringify({
           productName,
-          productPrice,
+          // productPrice,
           productCategory,
-          productSize,
+          // productSize,
+          productVariants,
           productDescription,
           images,
         }),
@@ -283,7 +286,7 @@ const CreateProdctPage: React.FC = () => {
                   <input
                     type="number"
                     // value={variant.price}
-                    // onChange={(e) => updatePrice(variant.sizeId, Number(e.target.value))}
+                    onChange={(e) => updatePrice(variant.sizeId, Number(e.target.value))}
                     className="border text-gray-900 text-sm rounded-lg w-full p-2.5 outline-none focus:border-violet-500"
                     placeholder="Enter price"
                     required

@@ -8,7 +8,7 @@ loadDB();
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-
+    console.log(body)
     await Product.create(body);
     return new Response(
       JSON.stringify({ message: "Product created successfully" }),
