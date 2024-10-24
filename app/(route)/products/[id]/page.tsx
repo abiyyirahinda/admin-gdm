@@ -11,18 +11,25 @@ import toast from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SelectValue, SelectTrigger, SelectContent, SelectGroup, Select, SelectItem } from "@/components/ui/select";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface Image {
   url: string;
+}
+interface productVariant {
+  sizeId: string;
+  sizeName: string;
+  price: number;
 }
 
 const DetailProduct = () => {
   const [images, setImages] = React.useState<Image[]>([]);
   const [productName, setProductName] = useState<string>("");
-  const [productPrice, setProductPrice] = useState(0);
+  // const [productPrice, setProductPrice] = useState(0);
   const [productCategory, setProductCategory] = useState<string>("");
-  const [productSize, setProductSize] = useState<string>("");
+  // const [productSize, setProductSize] = useState<string>("");
   const [productDescription, setProductDescription] = useState<string>("");
+  const [productVariants, setProductVariants] = useState<productVariant[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [getCategory, setGetCategory] = useState([]);
@@ -40,10 +47,11 @@ const DetailProduct = () => {
         const product = await response.json();
 
         setProductName(product.productName);
-        setProductPrice(product.productPrice);
+        // setProductPrice(product.productPrice);
         setProductCategory(product.productCategory);
-        setProductSize(product.productSize);
+        // setProductSize(product.productSize);
         setProductDescription(product.productDescription);
+        setProductVariants(product.productVariants);
         setImages(product.images || []);
       } catch (error) {
         console.error("Failed to fetch product:", error);
@@ -79,26 +87,57 @@ const DetailProduct = () => {
       getSizes();
     }
   }, [productId]);
+  const toggleSize = (size: any) => {
+    setProductVariants((prev) => {
+      const exists = prev.find((variant) => variant.sizeId === size._id);
 
+      // Menghapus jika sudah ada
+      if (exists) {
+        return prev.filter((variant) => variant.sizeId !== size._id);
+      }
+
+      // Menambahkan jika belum ada
+      return [
+        ...prev,
+        {
+          sizeId: size._id,
+          sizeName: `${size.sizeValue} ${size.sizeUnit}`,
+          price: 0,
+        },
+      ];
+    });
+  };
+  const updatePrice = (sizeId: string, price: number) => {
+    // mengubah price berdasarkan size pada productVariants
+    setProductVariants((prev) => {
+      return prev.map((variant) => {
+        if (variant.sizeId === sizeId) {
+          return { ...variant, price };
+        }
+        return variant;
+      });
+    });
+  };
   const handleCategoryChange = (value: string) => {
     setProductCategory(value);
   };
   const handleSizeChange = (value: string) => {
-    setProductSize(value);
+    // setProductSize(value);
   };
 
   const handleUpdateProduct = async () => {
-    if (!productName || !productPrice || !productCategory || !productSize || !productDescription || images.length === 0) {
+    if (!productName || productVariants.length === 0 || !productCategory || !productDescription || images.length === 0) {
       toast.error("Please fill in all fields and upload at least one image.");
       return;
     }
     try {
       const body = {
         productName,
-        productPrice,
+        // productPrice,
         productCategory,
-        productSize,
+        // productSize,
         productDescription,
+        productVariants,
         images,
       };
 
@@ -199,9 +238,7 @@ const DetailProduct = () => {
                       }
                     };
                     return (
-                      <PageNavbarPrimaryButton
-                        onClick={handleOpen}
-                        className="h-8 gap-1 bg-primary hidden py-1 px-2 duration-200 text-white rounded-lg text-xs md:flex items-center justify-center">
+                      <PageNavbarPrimaryButton onClick={handleOpen} className="h-8 gap-1 bg-primary hidden py-1 px-2 duration-200 text-white rounded-lg text-xs md:flex items-center justify-center">
                         <Image size={16} />
                         <span className="hidden md:inline">Upload an Image</span>
                       </PageNavbarPrimaryButton>
@@ -219,7 +256,8 @@ const DetailProduct = () => {
                                 <img src={image.url} alt={`Uploaded ${index + 1}`} className="object-cover h-full w-full rounded-lg" />
                                 <button
                                   onClick={() => handleDelete(index)}
-                                  className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                  className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                >
                                   <Trash size={22} />
                                 </button>
                               </CardContent>
@@ -247,22 +285,6 @@ const DetailProduct = () => {
                     required
                   />
                 </div>
-
-                <div className="flex-1">
-                  <label className="block mb-2 text-sm font-medium text-gray-600">Product Price</label>
-                  <input
-                    value={productPrice}
-                    onChange={(e) => setProductPrice(parseInt(e.target.value))}
-                    type="number"
-                    id="product-name-2"
-                    name="product-name-2"
-                    className=" border text-gray-900 text-sm rounded-lg  block w-full p-2.5 outline-none focus:border-violet-500 "
-                    placeholder="Enter product price"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
                 <div className="flex-1">
                   <label className="block mb-2 text-sm font-medium text-gray-600 ">Category</label>
                   <Select value={productCategory} onValueChange={handleCategoryChange}>
@@ -281,22 +303,73 @@ const DetailProduct = () => {
                   </Select>
                 </div>
 
-                <div className="flex-1">
-                  <label className="block mb-2 text-sm font-medium text-gray-600">Size</label>
-                  <Select value={productSize} onValueChange={handleSizeChange}>
+                {/* <div className="flex-1">
+                  <label className="block mb-2 text-sm font-medium text-gray-600">Product Price</label>
+                  <input
+                    value={productPrice}
+                    onChange={(e) => setProductPrice(parseInt(e.target.value))}
+                    type="number"
+                    id="product-name-2"
+                    name="product-name-2"
+                    className=" border text-gray-900 text-sm rounded-lg  block w-full p-2.5 outline-none focus:border-violet-500 "
+                    placeholder="Enter product price"
+                    required
+                  />
+                </div> */}
+              </div>
+              <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
+                {/* <div className="flex-1">
+                  <label className="block mb-2 text-sm font-medium text-gray-600 ">Category</label>
+                  <Select value={productCategory} onValueChange={handleCategoryChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a size" />
+                      <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        {getSizes.map((size: any) => (
-                          <SelectItem key={size._id} value={size._id}>
-                            {size.sizeValue} {size.sizeUnit}
+                        {getCategory.map((category: any) => (
+                          <SelectItem key={category._id} value={category._id}>
+                            {category.categoryName}
                           </SelectItem>
                         ))}
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+                </div> */}
+
+                <div className="flex-1">
+                  <label className="block mb-2 text-sm font-medium text-gray-600">Size</label>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <PageNavbarPrimaryButton>Select</PageNavbarPrimaryButton>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel>Size</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {getSizes.map((size: any) => (
+                        <DropdownMenuCheckboxItem key={size._id} checked={productVariants.some((variant) => variant.sizeId === size._id)} onCheckedChange={() => toggleSize(size)}>
+                          {size.sizeValue} {size.sizeUnit}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+              <div className="flex flex-col gap-4 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {productVariants.map((variant, index) => (
+                    <div key={index} className="flex flex-col">
+                      <label className="block mb-2 text-sm font-medium text-gray-600">{variant?.sizeName}</label>
+                      <input
+                        type="number"
+                        value={variant.price}
+                        onChange={(e) => updatePrice(variant.sizeId, Number(e.target.value))}
+                        className="border text-gray-900 text-sm rounded-lg w-full p-2.5 outline-none focus:border-violet-500"
+                        placeholder="Enter price"
+                        required
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="flex flex-col md:flex-row mb-4">
@@ -307,7 +380,8 @@ const DetailProduct = () => {
                     onChange={(e) => setProductDescription(e.target.value)}
                     className="min-h-36 border text-gray-900 text-sm rounded-lg block w-full p-3 focus:border-violet-500 outline-none"
                     placeholder="Enter product description"
-                    required></textarea>
+                    required
+                  ></textarea>
                 </div>
               </div>
               <div className="flex items-end justify-end gap-2">

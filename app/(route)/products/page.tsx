@@ -46,7 +46,6 @@ const ProductsPage = () => {
         const data = await response.json();
         setProducts(data.products);
         setTotalPages(Math.ceil(data.total / ITEMS_PER_PAGE));
-        
       } catch (error) {
       } finally {
         setLoading(false);
@@ -133,11 +132,11 @@ const ProductsPage = () => {
                       {product.productName}
                     </h1>
                     <p className="text-sm text-gray-500 line-clamp-1 mb-4">
-                      {findCategoryName(product.productCategory)} - {findSizeName(product.productSize)?.sizeValue} {findSizeName(product.productSize)?.sizeUnit}
+                      {findCategoryName(product.productCategory)} - {product.productVariants[0].sizeName}
                     </p>
                     <div className="inline-flex mb-4">
                       <h3 className="bg-primary/10 rounded-md px-2 py-1 text-sm font-semibold text-primary">
-                        {formatToIDR(product.productPrice)}
+                        {formatToIDR(product.productVariants[0].price)}
                       </h3>
                     </div>
                     <PageNavbarPrimaryButton
